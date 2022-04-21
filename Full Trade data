@@ -1,0 +1,30 @@
+import requests
+import json
+import pandas as pd
+CC = 252321
+#for i in (252321,252329,252330,252390):
+R = 276
+url='https://comtrade.un.org/api/get?r='+str(R)+'&px=HS&ps=2020%2C2019%2C2018%2C2017%2C2016&rg=1&p=all&cc='+str(CC)+'&type=c&freq=a'
+res = requests.get(url).json()
+json_object = json.dumps(res['dataset'], indent = 4)
+  
+# Writing to sample.json
+with open("sample.json", "w") as outfile:
+    outfile.write(json_object)
+    df_json = pd.read_json('sample.json')
+df_json.to_excel('DATAFILE.xlsx')
+praveen=pd.read_excel('DATAFILE.xlsx', index_col=0)
+url1='https://comtrade.un.org/api/get?r='+str(R)+'&px=HS&ps=2020%2C2019%2C2018%2C2017%2C2016&rg=2&p=all&cc='+str(CC)+'&type=c&freq=a'
+res1 = requests.get(url1).json()
+json_object1 = json.dumps(res1['dataset'], indent = 4)
+  
+# Writing to sample.json
+with open("sample1.json", "w") as outfile:
+    outfile.write(json_object1)
+    df_json1 = pd.read_json('sample1.json')
+df_json1.to_excel('DATAFILE1.xlsx')
+praveen1=pd.read_excel('DATAFILE1.xlsx', index_col=0)
+writer = pd.ExcelWriter('Uncomtrade_Full1_Trade_Data.xlsx', engine='xlsxwriter')
+praveen.to_excel(writer, sheet_name='Import_Trade_Data')
+praveen1.to_excel(writer, sheet_name='Export_Trade_Data')
+writer.save()
